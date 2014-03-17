@@ -1,9 +1,19 @@
-// This is required to run the server
-var io = require('socket.io').listen(app);
+var express = require('express')
+, app = express()
+, server = require('http').createServer(app)
+, io = require("socket.io").listen(server);
+
+app.configure(function() {
+	app.set('port', process.env.OPENSHIFT_NODEJS_PORT || 8080);
+  	app.set('ipaddr', process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1");
+});
+
 // here we define the port the messages are sended though.
 // in this case, it is port 8080, you can define it to every port you want.
 //but take note, some ports are already in use, then it will throw in an error message.
-app.listen(8080);
+server.listen(app.get('port'), app.get('ipaddr'), function(){
+	console.log('Express server listening on  IP: ' + app.get('ipaddr') + ' and port ' + app.get('port'));
+});
 //a variable for our "automatch maing"
 TmpRoom="wait";
 //if a client connects to this, it performs this whole, big function.
